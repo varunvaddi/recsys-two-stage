@@ -1,4 +1,5 @@
 import numpy as np
+from implicit.als import AlternatingLeastSquares
 from scipy import sparse
 
 
@@ -63,3 +64,29 @@ class ItemCF:
             scores = (seen[u] @ self.S).toarray()
             outs.append(_topk_unseen(scores, seen[u], k))
         return np.vstack(outs)
+
+
+class ALS:
+    name = "als"
+
+    def __init__(self, factors=16, regularization=10.0, iterations=15,
+                 alpha=1.0, seed=0):
+        self.kw = {
+            "factors": factors,
+            "regularization": regularization,
+            "iterations": iterations,
+            "random_state": seed,
+        }
+        self.alpha = alpha
+
+    def fit(self, X):
+        self.model = AlternatingLeastSquares(**self.kw)
+        self.model.fit((X * self.alpha).astype(np.float32).tocsr(),
+                       show_progress=False)
+        return self
+
+    def recommend(self, users, k, seen):
+        ids, _ = self.model.recommend(
+            np.asarray(users), seen[users], N=k, filter_already_liked_items=True
+        )
+        return ids
