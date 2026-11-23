@@ -1,21 +1,6 @@
 import numpy as np
 
 
-def evaluate(rec_matrix, users, truth_by_user, n_items, k=10):
-    recs_list = [list(row[:k]) for row in rec_matrix]
-    recall, ndcg, ap = [], [], []
-    for u, recs in zip(users, recs_list):
-        t = truth_by_user[u]
-        recall.append(recall_at_k(recs, t, k))
-        ndcg.append(ndcg_at_k(recs, t, k))
-        ap.append(ap_at_k(recs, t, k))
-    return {
-        f"recall@{k}": float(np.mean(recall)),
-        f"ndcg@{k}": float(np.mean(ndcg)),
-        f"map@{k}": float(np.mean(ap)),
-        f"coverage@{k}": catalog_coverage(recs_list, n_items, k),
-    }
-
 def recall_at_k(recs, truth, k):
     if not truth:
         return 0.0
@@ -47,3 +32,18 @@ def catalog_coverage(all_recs, n_items, k):
     for recs in all_recs:
         shown.update(recs[:k])
     return len(shown) / n_items
+
+def evaluate(rec_matrix, users, truth_by_user, n_items, k=10):
+    recs_list = [list(row[:k]) for row in rec_matrix]
+    recall, ndcg, ap = [], [], []
+    for u, recs in zip(users, recs_list):
+        t = truth_by_user[u]
+        recall.append(recall_at_k(recs, t, k))
+        ndcg.append(ndcg_at_k(recs, t, k))
+        ap.append(ap_at_k(recs, t, k))
+    return {
+        f"recall@{k}": float(np.mean(recall)),
+        f"ndcg@{k}": float(np.mean(ndcg)),
+        f"map@{k}": float(np.mean(ap)),
+        f"coverage@{k}": catalog_coverage(recs_list, n_items, k),
+    }
