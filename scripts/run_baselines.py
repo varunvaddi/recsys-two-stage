@@ -14,10 +14,11 @@ def main():
     users = np.array(sorted(u for u in truth if X[u].nnz > 0))
     print(f"evaluating on {len(users)} users")
 
-    model = baselines.Popularity().fit(X)
-    recs = model.recommend(users, K, X)
-    result = metrics.evaluate(recs, users, truth, N_ITEMS, K)
-    print(model.name, {k: round(v, 4) for k, v in result.items()})
+    for model in [baselines.Popularity(), baselines.ItemCF()]:
+        model.fit(X)
+        recs = model.recommend(users, K, X)
+        result = metrics.evaluate(recs, users, truth, N_ITEMS, K)
+        print(model.name, {k: round(v, 4) for k, v in result.items()})
 
 
 if __name__ == "__main__":
