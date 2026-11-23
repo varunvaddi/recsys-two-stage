@@ -1,6 +1,23 @@
 import numpy as np
 import pandas as pd
+from scipy import sparse
 
+
+def to_csr(df, n_users, n_items):
+    m = sparse.csr_matrix(
+        (np.ones(len(df), dtype=np.float32), (df["user_id"], df["item_id"])),
+        shape=(n_users, n_items),
+    )
+    m.data[:] = 1.0
+    return m
+
+
+def truth_dict(eval_df, train_csr):
+    out = {}
+    for u, i in zip(eval_df["user_id"].values, eval_df["item_id"].values):
+        if train_csr[u, i] == 0:
+            out.setdefault(int(u), set()).add(int(i))
+    return out
 
 def make_synthetic(n_users=2000, n_items=600, n_clusters=8, days=120, seed=0):
     rng = np.random.default_rng(seed)
