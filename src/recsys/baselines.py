@@ -19,7 +19,7 @@ class Popularity:
             out[row] = picked
         return out
 
-def _topk_unseen(scores, seen_rows, k):
+def topk_unseen(scores, seen_rows, k):
     scores = scores.copy()
     r, c = seen_rows.nonzero()
     scores[r, c] = -np.inf
@@ -62,7 +62,7 @@ class ItemCF:
         for s in range(0, len(users), user_chunk):
             u = users[s:s + user_chunk]
             scores = (seen[u] @ self.S).toarray()
-            outs.append(_topk_unseen(scores, seen[u], k))
+            outs.append(topk_unseen(scores, seen[u], k))
         return np.vstack(outs)
 
 
