@@ -1,3 +1,5 @@
+import pandas as pd
+
 from recsys import data
 
 
@@ -14,3 +16,9 @@ def test_time_split_has_no_leakage():
     assert train["ts"].max() < val["ts"].min()
     assert val["ts"].max() < test["ts"].min()
     assert len(train) + len(val) + len(test) == len(df)
+
+def test_last_days_keeps_only_recent_events():
+    df = pd.DataFrame({"user_id": [0, 0, 1], "item_id": [0, 1, 2],
+                       "ts": [0, 86400 * 10, 86400 * 11]})
+    out = data.last_days(df, 2)
+    assert out["item_id"].tolist() == [1, 2]

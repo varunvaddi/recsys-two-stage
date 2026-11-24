@@ -45,3 +45,6 @@ def time_split(df, val_frac=0.1, test_frac=0.1):
     val = df[(df["ts"] >= t_val) & (df["ts"] < t_test)]
     test = df[df["ts"] >= t_test]
     return train, val, test
+
+def last_days(df, days):
+    return df[df["ts"] >= df["ts"].max() - days * 86400]
