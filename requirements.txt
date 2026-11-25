@@ -11,3 +11,7 @@ torch
 lightgbm
 scikit-learn
 faiss-cpu
+
+fastapi
+uvicorn
+httpx
