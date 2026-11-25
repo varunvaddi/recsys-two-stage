@@ -9,3 +9,5 @@ duckdb
 pyarrow
 torch
 lightgbm
+
+scikit-learn
