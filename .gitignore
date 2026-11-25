@@ -10,3 +10,5 @@ artifacts/
 
 mlflow.db
 mlruns/
+
+*.egg-info/
