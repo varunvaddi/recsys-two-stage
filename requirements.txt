@@ -7,4 +7,5 @@ implicit
 matplotlib
 duckdb
 pyarrow
-torchlightgbm
+torch
+lightgbm
