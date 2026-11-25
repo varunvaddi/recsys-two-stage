@@ -48,3 +48,7 @@ def time_split(df, val_frac=0.1, test_frac=0.1):
 
 def last_days(df, days):
     return df[df["ts"] >= df["ts"].max() - days * 86400]
+
+def new_item_truth(truth, train_items):
+    out = {u: {i for i in t if i not in train_items} for u, t in truth.items()}
+    return {u: t for u, t in out.items() if t}
