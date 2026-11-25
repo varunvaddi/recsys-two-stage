@@ -1,9 +1,10 @@
 import argparse
 
+import mlflow
 import numpy as np
 import pandas as pd
 
-from recsys import candidates, data, metrics, ranker
+from recsys import candidates, data, metrics, ranker, tracking
 
 K = 10
 
@@ -64,6 +65,16 @@ def main():
 
     table.to_csv(a.out)
     model.booster_.save_model(a.model)
+
+    params = {"test_frac": a.test_frac, "n_features": len(cols), "n_candidate_rows": len(f),
+              "n_train_users": len(train_users), "n_test_users": len(test_users),
+              "best_iteration": model.best_iteration_, **model.get_params()}
+    with tracking.run("ranker", "lambdarank", params):
+        tracking.log_row(table.loc["RANKER (LightGBM)"])
+        tracking.log_row({"candidate_ceiling": ceiling})
+        tracking.log_row(imp / imp.sum(), prefix="gain_share/")
+        mlflow.log_artifact(a.out)
+        mlflow.log_artifact(a.model)
 
 
 if __name__ == "__main__":
