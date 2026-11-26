@@ -17,3 +17,5 @@ uvicorn
 httpx
 
 mlflow
+
+streamlit

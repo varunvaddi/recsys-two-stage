@@ -44,3 +44,5 @@ docker-run:
 	  -v "$(CURDIR)/artifacts:/app/artifacts:ro" \
 	  -v "$(CURDIR)/data/processed/items.parquet:/app/data/items.parquet:ro" \
 	  recsys-api
+app:
+	$(RUN) streamlit run app/streamlit_app.py
